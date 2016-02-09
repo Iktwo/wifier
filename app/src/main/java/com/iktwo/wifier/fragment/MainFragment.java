@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.iktwo.wifier.R;
 import com.iktwo.wifier.adapter.AccessPointsAdapter;
 import com.iktwo.wifier.data.AccessPoint;
 import com.iktwo.wifier.data.WifiNetwork;
+import com.iktwo.wifier.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,13 @@ public class MainFragment extends Fragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mAccessPointsAdapter = new AccessPointsAdapter(mAccessPoints,
-                R.layout.delegate_wifi_network, R.layout.delegate_wifi_networks);
+                R.layout.delegate_wifi_network,
+                R.layout.delegate_wifi_networks, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.d(TAG, "clicked " + view);
+            }
+        });
 
         mRecyclerView.setAdapter(mAccessPointsAdapter);
 
