@@ -5,4 +5,5 @@
     <string name="location_permission_required">Location permission is required to get the list of WiFi networks.</string>
     <string name="location_permission_not_available">Permission not available, requesting location permission.</string>
     <string name="no_permission">There is no permission to get the WiFi networks.</string>
+    <string name="hidden_network">Hidden network</string>
 </resources>

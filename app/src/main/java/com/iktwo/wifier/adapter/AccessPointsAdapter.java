@@ -60,7 +60,11 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
         final AccessPoint ap = items.get(position);
         WifiNetwork firstNetwork = ap.getNetworkAt(0);
 
-        holder.ssid.setText(firstNetwork.getSsid());
+        if (firstNetwork.getSsid().isEmpty()) {
+            holder.ssid.setText(holder.itemView.getContext().getString(R.string.hidden_network));
+        } else {
+            holder.ssid.setText(firstNetwork.getSsid());
+        }
 
         if (ap.length() > 1) {
             if (position == mExpandedIndex) {
@@ -69,7 +73,6 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
                 holder.innerRecyclerView.setVisibility(View.GONE);
             }
 
-            /// TODO: here initialize adapter and stuff
             holder.innerRecyclerView.setHasFixedSize(true);
             holder.innerRecyclerView.setLayoutManager(new CustomLinearLayout(holder.itemView.getContext()));
             holder.innerRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -107,18 +110,35 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             WifiNetwork firstNetwork = items.get(i).getNetworkAt(0);
 
             /// TODO: also check security (CAPABILITIES)!?!
-            if (firstNetwork.getSsid().equals(network.getSsid())) {
+            // Add this network to this item, as this network has more than one AP
+            if (!network.getSsid().isEmpty() && firstNetwork.getSsid().equals(network.getSsid())) {
                 items.get(i).addNetwork(network);
                 notifyItemChanged(i);
                 return;
             }
+
+            // Ignore hidden networks that are visible to you
+            if (network.getSsid().isEmpty()) {
+                for (int j = 0; j < items.get(i).length(); ++j) {
+                    WifiNetwork replicatedNetwork = items.get(i).getNetworkAt(j);
+
+                    if (network.getBssid().equals(replicatedNetwork.getBssid()))
+                        return;
+                }
+            }
         }
+
 
         items.add(new AccessPoint(network));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final RecyclerItemClickListener.OnItemClickListener mListener;
+        public CardView cardView;
+        public TextView ssid;
+        public TextView bssid;
+        public TextView manufacturer;
+        public RecyclerView innerRecyclerView;
         private final View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,12 +155,6 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
                 }
             }
         };
-
-        public CardView cardView;
-        public TextView ssid;
-        public TextView bssid;
-        public TextView manufacturer;
-        public RecyclerView innerRecyclerView;
 
         public ViewHolder(View view, RecyclerItemClickListener.OnItemClickListener listener) {
             super(view);
