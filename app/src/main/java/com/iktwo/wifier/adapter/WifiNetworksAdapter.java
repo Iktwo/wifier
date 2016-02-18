@@ -59,6 +59,8 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
         public TextView ssid;
         public TextView bssid;
         public TextView manufacturer;
+        public TextView capabilities;
+
         public CardView cardView;
 
         public ViewHolder(View view) {
@@ -66,6 +68,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
             ssid = (TextView) view.findViewById(R.id.text_view_ssid);
             bssid = (TextView) view.findViewById(R.id.text_view_bssid);
             manufacturer = (TextView) view.findViewById(R.id.text_view_manufacturer);
+            capabilities = (TextView) view.findViewById(R.id.text_view_capabilities);
             cardView = (CardView) view.findViewById(R.id.card_view);
         }
     }

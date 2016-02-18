@@ -138,7 +138,9 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
         public TextView ssid;
         public TextView bssid;
         public TextView manufacturer;
+        public TextView capabilities;
         public RecyclerView innerRecyclerView;
+
         private final View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,6 +166,7 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             ssid = (TextView) view.findViewById(R.id.text_view_ssid);
             bssid = (TextView) view.findViewById(R.id.text_view_bssid);
             manufacturer = (TextView) view.findViewById(R.id.text_view_manufacturer);
+            capabilities = (TextView) view.findViewById(R.id.text_view_capabilities);
             innerRecyclerView = (RecyclerView) view.findViewById(R.id.inner_recycler_view);
             cardView = (CardView) view.findViewById(R.id.card_view);
 

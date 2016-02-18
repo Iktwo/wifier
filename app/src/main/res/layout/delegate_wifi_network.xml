@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/text_view_bssid"
@@ -39,6 +39,12 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="16sp"/>
 
+        <TextView
+            android:id="@+id/text_view_capabilities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
