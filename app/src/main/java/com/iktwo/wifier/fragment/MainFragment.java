@@ -1,5 +1,6 @@
 package com.iktwo.wifier.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,6 +26,7 @@ public class MainFragment extends Fragment {
     private AccessPointsAdapter mAccessPointsAdapter;
     private RecyclerView mRecyclerView;
     private List<AccessPoint> mAccessPoints;
+    private MainFragmentInteractionListener mListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,17 @@ public class MainFragment extends Fragment {
         mAccessPoints = new ArrayList<>();
 
 //        setRetainInstance(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (MainFragmentInteractionListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement " + MainFragmentInteractionListener.class.getSimpleName());
+        }
     }
 
     @Override
@@ -65,6 +78,8 @@ public class MainFragment extends Fragment {
 
         mRecyclerView.setAdapter(mAccessPointsAdapter);
 
+        mListener.onMainFragmentReady();
+
         return view;
     }
 
@@ -73,6 +88,11 @@ public class MainFragment extends Fragment {
     }
 
     public void clearNetworks() {
-        mAccessPointsAdapter.clear();
+        if (mAccessPointsAdapter != null)
+            mAccessPointsAdapter.clear();
+    }
+
+    public interface MainFragmentInteractionListener {
+        void onMainFragmentReady();
     }
 }

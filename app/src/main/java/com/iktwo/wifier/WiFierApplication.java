@@ -3,8 +3,11 @@ package com.iktwo.wifier;
 import android.app.Application;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.squareup.leakcanary.LeakCanary;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +22,9 @@ public class WiFierApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+        Fabric.with(this, new Crashlytics.Builder().core(core).build());
 
         LeakCanary.install(this);
 

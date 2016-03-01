@@ -9,4 +9,5 @@
     <dimen name="card_view_radius">2dp</dimen>
     <dimen name="card_view_elevation">4dp</dimen>
     <dimen name="network_name_padding">8dp</dimen>
+    <dimen name="toolbar_initial_height">76dp</dimen>
 </resources>

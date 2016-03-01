@@ -35,9 +35,10 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
         // holder.ssid.setText(network.getSsid());
         holder.bssid.setText(network.getBssid());
         holder.manufacturer.setText(network.getManufacturer());
-        holder.itemView.setTag(network);
+        holder.capabilities.setText(WifiNetwork.getSecurity(network.getCapabilities()) + " - " + WifiNetwork.frequencyToChannel(network.getFrequency()) + "CH");
 
         holder.cardView.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.innerCardViewBackground));
+        holder.itemView.setTag(network);
     }
 
     @Override

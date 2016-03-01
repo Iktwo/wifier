@@ -1,9 +1,14 @@
 package com.iktwo.wifier.activity;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,20 +19,28 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.iktwo.wifier.R;
 import com.iktwo.wifier.broadcasts.WifiReceiver;
 import com.iktwo.wifier.data.WifiNetwork;
 import com.iktwo.wifier.fragment.MainFragment;
 
-public class MainActivity extends AppCompatActivity implements WifiReceiver.WifiBroadcastListener {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements WifiReceiver.WifiBroadcastListener,
+    MainFragment.MainFragmentInteractionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private final int PERMISSION_REQUEST_COARSE_LOCATION = 128;
 
+    private int mContentViewHeight;
+    private Toolbar mToolbar;
     private WifiManager mWifiManager;
     private WifiReceiver mWifiReceiver;
     private View mLayout;
@@ -47,8 +60,23 @@ public class MainActivity extends AppCompatActivity implements WifiReceiver.Wifi
 
         mLayout = findViewById(R.id.coordinator_layout);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        mToolbar.getViewTreeObserver().removeOnPreDrawListener(this);
+                        final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                        final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
+                        mToolbar.measure(widthSpec, heightSpec);
+                        mContentViewHeight = mToolbar.getHeight();
+                        collapseToolbar();
+                        return true;
+                    }
+                });
+
+        setSupportActionBar(mToolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -199,5 +227,34 @@ public class MainActivity extends AppCompatActivity implements WifiReceiver.Wifi
         } else {
             Log.e(TAG, "Error with fragment");
         }
+    }
+
+    @Override
+    public void onMainFragmentReady() {
+        mWifiReceiver.onReceive(this, null);
+    }
+
+    private void collapseToolbar() {
+        int toolBarHeight;
+        TypedValue tv = new TypedValue();
+        getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
+        toolBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        ValueAnimator valueHeightAnimator = ValueAnimator.ofInt(mContentViewHeight, toolBarHeight);
+        valueHeightAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                ViewGroup.LayoutParams lp = mToolbar.getLayoutParams();
+                lp.height = (Integer) animation.getAnimatedValue();
+                mToolbar.setLayoutParams(lp);
+            }
+        });
+
+        valueHeightAnimator.start();
+        valueHeightAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
     }
 }

@@ -80,6 +80,7 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
         } else {
             holder.bssid.setText(firstNetwork.getBssid());
             holder.manufacturer.setText(firstNetwork.getManufacturer());
+            holder.capabilities.setText(WifiNetwork.getSecurity(firstNetwork.getCapabilities()) + " - " + WifiNetwork.frequencyToChannel(firstNetwork.getFrequency()) + "CH");
         }
 
         holder.itemView.setTag(ap);
