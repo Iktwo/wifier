@@ -13,11 +13,13 @@ public class WifiNetwork implements Parcelable {
             return new WifiNetwork[size];
         }
     };
+    public static final int LEVELS = 4;
     private static final String WPA2 = "WPA2";
     private static final String WPA = "WPA";
     private static final String WEP = "WEP";
     private static final String OPEN = "Open";
     private static final String WPA_EAP = "WPA-EAP";
+    private static final String WPA2_EAP = "WPA2-EAP";
     private static final String IEEE8021X = "IEEE8021X";
     private String ssid;
     private String bssid;
@@ -28,6 +30,7 @@ public class WifiNetwork implements Parcelable {
 
     public WifiNetwork() {
     }
+
     public WifiNetwork(String ssid, String bssid, String capabilities, String manufacturer, int level, int frequency) {
         this.ssid = ssid;
         this.bssid = bssid;
@@ -53,7 +56,7 @@ public class WifiNetwork implements Parcelable {
             return (freq - 2407) / 5;
         else if (freq >= 4910 && freq <= 4980)
             return (freq - 4000) / 5;
-        else if (freq <= 45000) /* DMG band lower limit */
+        else if (freq <= 45000)
             return (freq - 5000) / 5;
         else if (freq >= 58320 && freq <= 64800)
             return (freq - 56160) / 2160;
@@ -62,7 +65,7 @@ public class WifiNetwork implements Parcelable {
     }
 
     public static String getSecurity(String capabilities) {
-        final String[] securityModes = {WEP, WPA, WPA2, WPA_EAP, IEEE8021X};
+        final String[] securityModes = {WEP, WPA, WPA2, WPA_EAP, WPA2_EAP, IEEE8021X};
 
         for (int i = securityModes.length - 1; i >= 0; i--) {
             if (capabilities.contains(securityModes[i])) {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
+import com.iktwo.wifier.R;
 import com.iktwo.wifier.WiFierApplication;
 import com.iktwo.wifier.data.WifiNetwork;
 
@@ -30,7 +31,7 @@ public class WifiReceiver extends BroadcastReceiver {
             String manufacturer = WiFierApplication.manufacturers.get(result.BSSID.toUpperCase().substring(0, 8));
 
             if (manufacturer == null)
-                manufacturer = "Unknown";
+                manufacturer = "";
 
             mListener.newNetwork(new WifiNetwork(result.SSID,
                     result.BSSID, result.capabilities, manufacturer, result.level, result.frequency));

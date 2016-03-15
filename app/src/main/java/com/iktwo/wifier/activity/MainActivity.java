@@ -5,10 +5,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,10 +29,8 @@ import com.iktwo.wifier.broadcasts.WifiReceiver;
 import com.iktwo.wifier.data.WifiNetwork;
 import com.iktwo.wifier.fragment.MainFragment;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements WifiReceiver.WifiBroadcastListener,
-    MainFragment.MainFragmentInteractionListener {
+        MainFragment.MainFragmentInteractionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private final int PERMISSION_REQUEST_COARSE_LOCATION = 128;

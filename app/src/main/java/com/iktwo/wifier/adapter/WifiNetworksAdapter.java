@@ -1,15 +1,18 @@
 package com.iktwo.wifier.adapter;
 
+import android.net.wifi.WifiManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iktwo.wifier.R;
 import com.iktwo.wifier.data.WifiNetwork;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -32,13 +35,20 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         final WifiNetwork network = items.get(position);
 
-        // holder.ssid.setText(network.getSsid());
-        holder.bssid.setText(network.getBssid());
-        holder.manufacturer.setText(network.getManufacturer());
-        holder.capabilities.setText(WifiNetwork.getSecurity(network.getCapabilities()) + " - " + WifiNetwork.frequencyToChannel(network.getFrequency()) + "CH");
+        holder.ssid.setText(String.format("%s  -  %s  -  CH %s", network.getBssid(), WifiNetwork.getSecurity(network.getCapabilities()), WifiNetwork.frequencyToChannel(network.getFrequency())));
+        holder.bssid.setVisibility(View.GONE);
+
+        if (!network.getManufacturer().isEmpty()) {
+            holder.manufacturer.setVisibility(View.VISIBLE);
+            holder.manufacturer.setText(network.getManufacturer());
+        } else {
+            holder.manufacturer.setVisibility(View.GONE);
+        }
 
         holder.cardView.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.innerCardViewBackground));
         holder.itemView.setTag(network);
+
+        holder.strength.setImageLevel(WifiManager.calculateSignalLevel(network.getLevel(), WifiNetwork.LEVELS));
     }
 
     @Override
@@ -60,8 +70,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
         public TextView ssid;
         public TextView bssid;
         public TextView manufacturer;
-        public TextView capabilities;
-
+        public ImageView strength;
         public CardView cardView;
 
         public ViewHolder(View view) {
@@ -69,8 +78,8 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
             ssid = (TextView) view.findViewById(R.id.text_view_ssid);
             bssid = (TextView) view.findViewById(R.id.text_view_bssid);
             manufacturer = (TextView) view.findViewById(R.id.text_view_manufacturer);
-            capabilities = (TextView) view.findViewById(R.id.text_view_capabilities);
             cardView = (CardView) view.findViewById(R.id.card_view);
+            strength = (ImageView) view.findViewById(R.id.image_strength);
         }
     }
 }

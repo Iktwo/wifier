@@ -6,4 +6,5 @@
     <string name="location_permission_not_available">Permission not available, requesting location permission.</string>
     <string name="no_permission">There is no permission to get the WiFi networks.</string>
     <string name="hidden_network">Hidden network</string>
+    <string name="desc_image_strength">Network strength</string>
 </resources>

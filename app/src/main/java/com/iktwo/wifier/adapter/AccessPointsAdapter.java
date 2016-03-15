@@ -1,11 +1,14 @@
 package com.iktwo.wifier.adapter;
 
+import android.net.wifi.WifiManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iktwo.wifier.R;
@@ -13,12 +16,14 @@ import com.iktwo.wifier.data.AccessPoint;
 import com.iktwo.wifier.data.WifiNetwork;
 import com.iktwo.wifier.utils.RecyclerItemClickListener;
 import com.iktwo.wifier.views.CustomLinearLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapter.ViewHolder> {
     private static final int SINGLE = 0;
     private static final int GROUP = 1;
+    private static final String TAG = AccessPointsAdapter.class.getSimpleName();
 
     private List<AccessPoint> items;
     private int mItemLayout;
@@ -78,9 +83,16 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             holder.innerRecyclerView.setItemAnimator(new DefaultItemAnimator());
             holder.innerRecyclerView.setAdapter(new WifiNetworksAdapter(ap.getWifiNetworks(), R.layout.delegate_wifi_network));
         } else {
-            holder.bssid.setText(firstNetwork.getBssid());
-            holder.manufacturer.setText(firstNetwork.getManufacturer());
-            holder.capabilities.setText(WifiNetwork.getSecurity(firstNetwork.getCapabilities()) + " - " + WifiNetwork.frequencyToChannel(firstNetwork.getFrequency()) + "CH");
+            holder.bssid.setText(String.format("%s  -  %s  -  CH %s", firstNetwork.getBssid(), WifiNetwork.getSecurity(firstNetwork.getCapabilities()), WifiNetwork.frequencyToChannel(firstNetwork.getFrequency())));
+
+            if (!firstNetwork.getManufacturer().isEmpty()) {
+                holder.manufacturer.setVisibility(View.VISIBLE);
+                holder.manufacturer.setText(firstNetwork.getManufacturer());
+            } else {
+                holder.manufacturer.setVisibility(View.GONE);
+            }
+
+            holder.strength.setImageLevel(WifiManager.calculateSignalLevel(firstNetwork.getLevel(), WifiNetwork.LEVELS));
         }
 
         holder.itemView.setTag(ap);
@@ -139,7 +151,7 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
         public TextView ssid;
         public TextView bssid;
         public TextView manufacturer;
-        public TextView capabilities;
+        public ImageView strength;
         public RecyclerView innerRecyclerView;
 
         private final View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -167,10 +179,9 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             ssid = (TextView) view.findViewById(R.id.text_view_ssid);
             bssid = (TextView) view.findViewById(R.id.text_view_bssid);
             manufacturer = (TextView) view.findViewById(R.id.text_view_manufacturer);
-            capabilities = (TextView) view.findViewById(R.id.text_view_capabilities);
             innerRecyclerView = (RecyclerView) view.findViewById(R.id.inner_recycler_view);
             cardView = (CardView) view.findViewById(R.id.card_view);
-
+            strength = (ImageView) view.findViewById(R.id.image_strength);
             cardView.setOnClickListener(onClickListener);
         }
     }
