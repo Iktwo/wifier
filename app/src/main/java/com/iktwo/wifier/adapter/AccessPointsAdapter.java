@@ -16,7 +16,6 @@ import com.iktwo.wifier.data.AccessPoint;
 import com.iktwo.wifier.data.WifiNetwork;
 import com.iktwo.wifier.utils.RecyclerItemClickListener;
 import com.iktwo.wifier.views.CustomLinearLayout;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -30,13 +29,10 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
     private int mGroupLayout;
     private int mExpandedIndex = -1;
 
-    private RecyclerItemClickListener.OnItemClickListener mOnItemClickListener;
-
-    public AccessPointsAdapter(List<AccessPoint> items, int itemLayout, int groupLayout, RecyclerItemClickListener.OnItemClickListener listener) {
+    public AccessPointsAdapter(List<AccessPoint> items, int itemLayout, int groupLayout) {
         this.items = items;
         mItemLayout = itemLayout;
         mGroupLayout = groupLayout;
-        mOnItemClickListener = listener;
     }
 
     @Override
@@ -57,7 +53,7 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
                 break;
         }
 
-        return new ViewHolder(v, mOnItemClickListener);
+        return new ViewHolder(v);
     }
 
     @Override
@@ -141,12 +137,19 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             }
         }
 
-
         items.add(new AccessPoint(network));
     }
 
+    public void toggleExpanded(int position) {
+        if (mExpandedIndex != position)
+            mExpandedIndex = position;
+        else
+            mExpandedIndex = -1;
+
+        notifyItemChanged(position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private final RecyclerItemClickListener.OnItemClickListener mListener;
         public CardView cardView;
         public TextView ssid;
         public TextView bssid;
@@ -154,27 +157,8 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
         public ImageView strength;
         public RecyclerView innerRecyclerView;
 
-        private final View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (innerRecyclerView != null) {
-                    if (mExpandedIndex != getAdapterPosition()) {
-                        mExpandedIndex = getAdapterPosition();
-                    } else {
-                        mExpandedIndex = -1;
-                    }
-
-                    notifyItemChanged(getAdapterPosition());
-                } else {
-                    mListener.onItemClick(view, getAdapterPosition());
-                }
-            }
-        };
-
-        public ViewHolder(View view, RecyclerItemClickListener.OnItemClickListener listener) {
+        public ViewHolder(View view) {
             super(view);
-
-            mListener = listener;
 
             ssid = (TextView) view.findViewById(R.id.text_view_ssid);
             bssid = (TextView) view.findViewById(R.id.text_view_bssid);
@@ -182,7 +166,6 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             innerRecyclerView = (RecyclerView) view.findViewById(R.id.inner_recycler_view);
             cardView = (CardView) view.findViewById(R.id.card_view);
             strength = (ImageView) view.findViewById(R.id.image_strength);
-            cardView.setOnClickListener(onClickListener);
         }
     }
 }

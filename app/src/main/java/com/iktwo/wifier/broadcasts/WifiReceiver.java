@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
-import com.iktwo.wifier.R;
 import com.iktwo.wifier.WiFierApplication;
 import com.iktwo.wifier.data.WifiNetwork;
 
@@ -40,6 +39,7 @@ public class WifiReceiver extends BroadcastReceiver {
 
     public interface WifiBroadcastListener {
         void gotResults();
+
         void newNetwork(WifiNetwork wifiNetwork);
     }
 }

@@ -69,14 +69,27 @@ public class MainFragment extends Fragment {
 
         mAccessPointsAdapter = new AccessPointsAdapter(mAccessPoints,
                 R.layout.delegate_wifi_network,
-                R.layout.delegate_wifi_networks, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Log.d(TAG, "clicked " + view);
-            }
-        });
+                R.layout.delegate_wifi_networks);
 
         mRecyclerView.setAdapter(mAccessPointsAdapter);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+                if (view.getTag() instanceof AccessPoint) {
+                    AccessPoint ap = (AccessPoint) view.getTag();
+
+                    if (ap.length() > 1) {
+                        mAccessPointsAdapter.toggleExpanded(position);
+                    }
+                }
+            }
+
+            @Override
+            public void onItemLongPress(View view, int position) {
+            }
+        }));
 
         mListener.onMainFragmentReady();
 
