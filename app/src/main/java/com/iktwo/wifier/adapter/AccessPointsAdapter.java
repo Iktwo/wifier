@@ -3,6 +3,7 @@ package com.iktwo.wifier.adapter;
 import android.net.wifi.WifiManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import com.iktwo.wifier.R;
 import com.iktwo.wifier.data.AccessPoint;
 import com.iktwo.wifier.data.WifiNetwork;
 import com.iktwo.wifier.utils.RecyclerItemClickListener;
-import com.iktwo.wifier.views.CustomLinearLayout;
 
 import java.util.List;
 
@@ -75,9 +75,28 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
             }
 
             holder.innerRecyclerView.setHasFixedSize(true);
-            holder.innerRecyclerView.setLayoutManager(new CustomLinearLayout(holder.itemView.getContext()));
+
+            holder.innerRecyclerView.setLayoutManager(
+                    new LinearLayoutManager(holder.itemView.getContext()));
+
             holder.innerRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            holder.innerRecyclerView.setAdapter(new WifiNetworksAdapter(ap.getWifiNetworks(), R.layout.delegate_wifi_network));
+
+            holder.innerRecyclerView.setAdapter(
+                    new WifiNetworksAdapter(ap.getWifiNetworks(), R.layout.delegate_wifi_network));
+
+            holder.innerRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(holder.itemView.getContext(),
+                    holder.innerRecyclerView,
+                    new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Log.d(TAG, "Inner clicked " + view.toString().substring(0, 30) + "  -  " + position);
+                        }
+
+                        @Override
+                        public void onItemLongPress(View view, int position) {
+                            Log.d(TAG, "Inner onItemLongPress " + view.toString().substring(0, 30) + " - " + position);
+                        }
+                    }));
         } else {
             holder.bssid.setText(String.format("%s  -  %s  -  CH %s", firstNetwork.getBssid(), WifiNetwork.getSecurity(firstNetwork.getCapabilities()), WifiNetwork.frequencyToChannel(firstNetwork.getFrequency())));
 
@@ -100,62 +119,33 @@ public class AccessPointsAdapter extends RecyclerView.Adapter<AccessPointsAdapte
     }
 
     public void clear() {
-        int size = items.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++)
-                items.remove(0);
-
-            this.notifyItemRangeRemoved(0, size);
-        }
-    }
-
-    public void addAccessPoint(AccessPoint ap) {
-        items.add(ap);
-        notifyItemInserted(items.size());
-    }
-
-    public void addWifiNetwork(WifiNetwork network) {
-        for (int i = 0; i < items.size(); ++i) {
-            WifiNetwork firstNetwork = items.get(i).getNetworkAt(0);
-
-            /// TODO: also check security (CAPABILITIES)!?!
-            // Add this network to this item, as this network has more than one AP
-            if (!network.getSsid().isEmpty() && firstNetwork.getSsid().equals(network.getSsid())) {
-                items.get(i).addNetwork(network);
-                notifyItemChanged(i);
-                return;
-            }
-
-            // Ignore hidden networks that are visible to you
-            if (network.getSsid().isEmpty()) {
-                for (int j = 0; j < items.get(i).length(); ++j) {
-                    WifiNetwork replicatedNetwork = items.get(i).getNetworkAt(j);
-
-                    if (network.getBssid().equals(replicatedNetwork.getBssid()))
-                        return;
-                }
-            }
-        }
-
-        items.add(new AccessPoint(network));
+        items.clear();
+        notifyDataSetChanged();
     }
 
     public void toggleExpanded(int position) {
+        // Log.d(TAG, "toggleExpanded: " + position + " previouslyExpanded: " + mExpandedIndex);
+        int previouslyExpanded = mExpandedIndex;
+
         if (mExpandedIndex != position)
             mExpandedIndex = position;
         else
             mExpandedIndex = -1;
 
+        if (previouslyExpanded != -1) {
+            notifyItemChanged(previouslyExpanded);
+        }
+
         notifyItemChanged(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public CardView cardView;
-        public TextView ssid;
-        public TextView bssid;
-        public TextView manufacturer;
-        public ImageView strength;
-        public RecyclerView innerRecyclerView;
+        final public CardView cardView;
+        final public TextView ssid;
+        final public TextView bssid;
+        final public TextView manufacturer;
+        final public ImageView strength;
+        final public RecyclerView innerRecyclerView;
 
         public ViewHolder(View view) {
             super(view);

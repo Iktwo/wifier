@@ -1,0 +1,38 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".networks.NetworksFragment"
+             tools:showIn="@layout/networks_act">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:padding="@dimen/recycler_view_padding"
+        android:scrollbars="vertical"/>
+
+    <ProgressBar
+        android:id="@+id/busy_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/text_view_no_permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/text_view_padding"
+        android:layout_marginLeft="@dimen/text_view_padding"
+        android:layout_marginRight="@dimen/text_view_padding"
+        android:layout_marginStart="@dimen/text_view_padding"
+        android:gravity="center"
+        android:text="@string/no_permission"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone"/>
+
+</FrameLayout>

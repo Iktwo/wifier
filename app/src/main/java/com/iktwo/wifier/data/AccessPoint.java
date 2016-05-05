@@ -12,6 +12,14 @@ public class AccessPoint {
         mWifiNetworks.add(wifiNetwork);
     }
 
+    public String getSsid() {
+        if (mWifiNetworks.isEmpty()) {
+            return "";
+        } else {
+            return mWifiNetworks.get(0).getSsid();
+        }
+    }
+
     public WifiNetwork getNetworkAt(int i) {
         return mWifiNetworks.get(i);
     }
